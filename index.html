@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FM26 Taktik-Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0b162a;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1, h2 { text-align: center; color: #00ff87; }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #13284c;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,255,135,0.2);
+    }
+    label { display: block; margin-top: 10px; }
+    select, button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      margin-top: 5px;
+      font-size: 16px;
+    }
+    button {
+      background: #00ff87;
+      color: #13284c;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover { background: #00e67a; }
+    .output {
+      margin-top: 20px;
+      padding: 15px;
+      background: #0e1c35;
+      border-radius: 8px;
+    }
+    pre { white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Football Manager 26 – KI Taktik Generator</h1>
+  <div class="container">
+    <h2>Wähle deine Spielphilosophie</h2>
+
+    <label>Spielstil:</label>
+    <select id="style">
+      <option value="possession">Ballbesitz</option>
+      <option value="counter">Konter</option>
+      <option value="pressing">Gegenpressing</option>
+      <option value="defensive">Defensiv kompakt</option>
+    </select>
+
+    <label>Formation:</label>
+    <select id="formation">
+      <option value="433">4-3-3</option>
+      <option value="4231">4-2-3-1</option>
+      <option value="352">3-5-2</option>
+      <option value="532">5-3-2</option>
+      <option value="4222">4-2-2-2</option>
+    </select>
+
+    <label>Ausrichtung:</label>
+    <select id="mentality">
+      <option value="attacking">Offensiv</option>
+      <option value="balanced">Ausgewogen</option>
+      <option value="defensive">Defensiv</option>
+    </select>
+
+    <button onclick="generateTactic()">Taktik generieren</button>
+
+    <div class="output" id="output"></div>
+  </div>
+
+  <script>
+    function generateTactic() {
+      const style = document.getElementById('style').value;
+      const formation = document.getElementById('formation').value;
+      const mentality = document.getElementById('mentality').value;
+      const output = document.getElementById('output');
+
+      let tactic = {
+        name: "",
+        teamInstructions: [],
+        playerRoles: [],
+        notes: []
+      };
+
+      // --- Grundlogik nach Spielstil ---
+      if (style === "possession") {
+        tactic.name = "Kontrollierter Ballbesitz";
+        tactic.teamInstructions = [
+          "Kurze Pässe",
+          "Geduldiger Spielaufbau",
+          "Hohe Defensivlinie",
+          "Breit spielen"
+        ];
+        tactic.playerRoles = ["Torwart (Mitspielend)", "Innenverteidiger", "Regista", "Mezzala", "Falsche 9", "Inverted Winger"];
+      } else if (style === "counter") {
+        tactic.name = "Schneller Konter";
+        tactic.teamInstructions = [
+          "Schnelleres Tempo",
+          "Lange Bälle in die Tiefe",
+          "Enges Defensivspiel",
+          "Nach Ballgewinn: Sofortiger Angriff"
+        ];
+        tactic.playerRoles = ["Torwart (Abwehrend)", "Zerstörer", "Box-to-Box", "Flügelspieler (Unterstützen)", "Stoßstürmer"];
+      } else if (style === "pressing") {
+        tactic.name = "Gegenpressing-Intensiv";
+        tactic.teamInstructions = [
+          "Extrem hohes Pressing",
+          "Kurze Pässe",
+          "Hohes Tempo",
+          "Verteidigungslinie weit vorn"
+        ];
+        tactic.playerRoles = ["Sweeper Keeper", "Innenverteidiger (Ballspielend)", "Pressing-Stürmer", "Wing-Backs (Angreifen)"];
+      } else if (style === "defensive") {
+        tactic.name = "Defensivblock & Umschalten";
+        tactic.teamInstructions = [
+          "Tiefe Verteidigung",
+          "Diszipliniertes Positionsspiel",
+          "Lange Bälle auf Zielspieler",
+          "Tempo senken"
+        ];
+        tactic.playerRoles = ["Torwart (Abwehrend)", "Innenverteidiger", "ZDM (Abräumer)", "Flügelspieler (Defensiv)", "Zielspieler"];
+      }
+
+      // --- Formation & Mentalität anpassen ---
+      tactic.notes.push(`Formation: ${formation.replace(/(\d)(?=\d)/g, '$1-')}`);
+      tactic.notes.push(`Ausrichtung: ${mentality === "attacking" ? "Offensiv" : mentality === "defensive" ? "Defensiv" : "Ausgewogen"}`);
+
+      // --- Ausgabe generieren ---
+      output.innerHTML = `
+        <h3>${tactic.name}</h3>
+        <p><b>Team-Anweisungen:</b></p>
+        <ul>${tactic.teamInstructions.map(t => `<li>${t}</li>`).join('')}</ul>
+        <p><b>Wichtige Rollen:</b></p>
+        <ul>${tactic.playerRoles.map(r => `<li>${r}</li>`).join('')}</ul>
+        <p><b>Zusätzliche Hinweise:</b></p>
+        <ul>${tactic.notes.map(n => `<li>${n}</li>`).join('')}</ul>
+      `;
+    }
+  </script>
+</body>
+</html>
